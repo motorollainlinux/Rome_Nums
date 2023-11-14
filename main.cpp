@@ -19,25 +19,55 @@ public:
         string Rome;
         FC::IsAInt("Enter a arabian num: ", Arabian);
         for(map <int, char> :: const_reverse_iterator ri = Rome_to_Arabian.crbegin(); ri != Rome_to_Arabian.crend(); ri++) {
-            cout << Arabian / ri->first % 10 << "\n";
-            for(;Arabian / ri->first % 10 > 0; Arabian -= ri->first ) {
-                if(Arabian/ ri->first % 10 == 9) {
-                    Rome.push_back(Rome_to_Arabian[ri->first/10]);
-                    Arabian -= ri->first/10;
-                    Rome.push_back(ri->second);
-                } else Rome.push_back(ri->second);
-                if (Arabian / ri->first % 10 == 4) {
+            for(;Arabian / ri->first % 10 > 0; ) {
+                if(Arabian / ri->first % 10 == 1 && Arabian - 9 == 0) {
+                    Rome.push_back(Rome_to_Arabian[ri->first/5]);
+                    Rome.push_back(Rome_to_Arabian[ri->first*2]);
+                    Arabian -= 9;
+                } else if (Arabian / ri->first % 10 == 4 && Arabian - 4 == 0) {
                     Rome.push_back(Rome_to_Arabian[ri->first]);
                     Rome.push_back(Rome_to_Arabian[ri->first*5]);
                     Arabian -= 4;
-                } else Rome.push_back(ri->second);
+                } else {
+                    Rome.push_back(ri->second);
+                    Arabian -= ri->first;
+                }
             }
         }
-        cout << Rome;
+        cout << "In rome numberic is a: " << Rome << "\n";
+    }
+    void RomeToArabian() {
+        string Rome;
+        int Arabian = 0;
+        FC::IsAMaskSymbols("Enter a rome number ", "IVXLCDM", Rome);
+        
+        for(map <int, char> :: iterator ri = Rome_to_Arabian.begin(); ri != Rome_to_Arabian.end(); ri++) {
+            for(int i = Rome.length(); i >= 0; i--) {
+                if(Rome[i] == ri->second) {
+                    if(Rome[i-1] == 'I' && Rome[i] != 'I') {
+                        Arabian += ri->first-1;
+                    }else
+                    Arabian += ri->first;
+                }
+            }
+        }
+        cout << "In arabian numberic is a: " << Arabian << "\n";
     }
 };
 int main() {
     RomeArabian RA;
-    RA.ArabianToRome();
+    bool IsExit = false;
+    int UserChoise = -2;
+    do{
+        FC::IsAInt("How you want?(0 - tranfer rome to arabian; 1 - tranfer arabian to rome; -1 - exit program): ", UserChoise);
+        if(UserChoise == 0) 
+        RA.RomeToArabian();
+        else if(UserChoise == 1)
+        RA.ArabianToRome();
+        else if(UserChoise == -1)
+        IsExit = true;
+        else cout << "Invalid Enter!\n";
+        UserChoise = -2;
+    } while(!IsExit);
     return 0;
 }
